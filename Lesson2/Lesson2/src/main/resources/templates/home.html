@@ -1,0 +1,25 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/resemblance.html">
+    <div layout:fragment="home">
+        <table class="table table-striped mt-3">
+            <thead>
+            <tr>
+                <th scope="col-md-2">ID</th>
+                <th scope="col">NAME</th>
+                <th scope="col">SURNAME</th>
+                <th scope="col">EXAM</th>
+                <th scope="col">MARK</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="student : ${students}" th:class="${student.mark.equals('F') ? 'row-danger' : ''}">
+                <th scope="row" th:text="${student.id}"></th>
+                <td th:text="${student.name}"></td>
+                <td th:text="${student.surname}"></td>
+                <td th:text="${student.exam}"></td>
+                <td th:text="${student.mark}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</html>

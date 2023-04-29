@@ -1,0 +1,59 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/resemblance.html">
+<div layout:fragment="home">
+    <button class="border-0 btn btn-dark mt-4 mb-1" data-bs-toggle="modal" data-bs-target="#exampleModal" style="background: #3e7b8f">+ Add New Task</button>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th class="col-md-1" scope="col">ID</th>
+            <th class="col-md-5" scope="col">NAME</th>
+            <th scope="col">DEADLINE DATE</th>
+            <th scope="col">IS COMPLETED</th>
+            <th scope="col">DETAILS</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="task : ${tasks}">
+            <th scope="row" th:text="${task.id}"></th>
+            <td th:text="${task.name}"></td>
+            <td th:text="${task.date}"></td>
+            <td th:text="${task.completed == false ? 'NO' : 'YES'}"></td>
+            <td><button type="button" class="border-0 btn btn-dark btn-sm" style="background: #3e7b8f">
+                <a class="nav-link" th:href="@{'/edit/' + ${task.id}}">DETAILS</a></button></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="modal modal-lg" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form th:action="@{'/addtask'}" method="post" class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div class="mb-3">
+                            <label class="form-label">TASK NAME:</label>
+                            <input type="text" class="form-control" placeholder="Task name..." name="name">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">TASK DESCRIPTION:</label>
+                            <textarea class="form-control" rows="5" placeholder="Description..." name="description"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">TASK DEADLINE DATE:</label>
+                            <input type="date" class="form-control" name="date">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</html>

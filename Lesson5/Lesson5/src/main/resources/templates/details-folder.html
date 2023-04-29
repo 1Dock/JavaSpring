@@ -1,0 +1,132 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/resemblance.html">
+<div layout:fragment="details-folder">
+    <div class="card mt-3">
+        <div class="card-header">
+            <h4></h4>
+        </div>
+        <div class="card-body">
+            <form th:action="@{'/update-folder'}" method="post" class="d-flex align-items-center mb-3">
+                <input hidden name="folder_id" th:value="${folder.getId()}">
+                <input class="form-control border-0 fw-bold me-3" type="text" th:value="${folder.getName()}" name="folder_name">
+                <div>
+                    <button class="btn btn-success btn-sm">save</button>
+                </div>
+            </form>
+            <form class="d-inline" th:action="@{'/delete-category'}" method="post" th:each="category : ${folder.getCategories()}">
+                <input hidden name="folder_id" th:value="${folder.getId()}">
+                <input hidden name="category_id" th:value="${category.getId()}">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary btn-sm fw-bold pe-1 pe-none" th:text="${category.getName()}"></button>
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal" class="btn btn-primary btn-sm" th:attr="data-category-id=${category.getId()}">&#9932;</button>
+                </div>
+            </form>
+            <button class="btn btn-light btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#addCategoryModal">+ Add Category</button>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-light btn-xl fw-bold mt-3 mb-2" data-bs-toggle="modal" data-bs-target="#addTaskModal">+ New Task</button>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Task Name</th>
+            <th scope="col">Status</th>
+            <th scope="col">Details</th>
+        </tr>
+        </thead>
+        <tbody class="table-group-divider">
+        <tr th:each="task,iter : ${folder.getTasks()}">
+            <td class="col-md-1" th:text="${iter.index + 1}"></td>
+            <td class="col-md-8" th:text="${task.getTitle()}"></td>
+            <th th:class="${task.getStatus().getClassName()}" th:text="${task.getStatus().getName()}"></th>
+            <td>
+                <form th:action="@{'/delete-task'}" method="post">
+                    <input hidden name="folder_id" th:value="${folder.getId()}">
+                    <input hidden name="task_id" th:value="${task.getId()}">
+                    <div class="btn-group">
+                        <a th:href="@{'/details-task/' + ${task.getId()}}" class="btn btn-primary btn-sm">View More</a>
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </div>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="modal fade modal-lg" id="addTaskModal">
+        <div class="modal-dialog">
+            <form th:action="@{'/add-task'}" method="post" class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">ADD TASK</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <input hidden name="folder_id" th:value="${folder.getId()}">
+                    <label class="form-label">TITLE:</label>
+                    <input type="text" class="form-control mb-2" placeholder="Title" name="title">
+                    <label class="form-label">DESCRIPTION:</label>
+                    <textarea class="form-control" placeholder="Description" rows="4" name="description"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                    <button type="submit" class="btn btn-success">ADD</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade modal-lg" id="addCategoryModal">
+        <div class="modal-dialog">
+            <form th:action="@{'/add-category'}" method="post" class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">ASSIGN CATEGORY</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label">CATEGORY NAME:</label>
+                    <input hidden name="folder_id" th:value="${folder.getId()}">
+                    <select class="form-select" name="category_id">
+                        <option disabled selected>Select category</option>
+                        <option th:each="category : ${categories}" th:value="${category.getId()}" th:text="${category.getName()}"></option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                    <button type="submit" class="btn btn-success">ADD</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade modal-lg" id="deleteCategoryModal">
+        <div class="modal-dialog">
+            <form th:action="@{'/delete-category'}" method="post" class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Remove Category</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <input hidden name="folder_id" th:value="${folder.getId()}">
+                    <input hidden name="category_id" id="deleteCategoryId">
+                    <h4>Do you want to remove category</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CLOSE</button>
+                    <button type="submit" class="btn btn-danger">REMOVE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(() => {
+            $("#deleteCategoryModal").on('shown.bs.modal', (e) => {
+                const btn = $(e.relatedTarget)[0]
+                const id = $(btn).data("category-id")
+                $("#deleteCategoryId").val(id)
+            })
+        })
+    </script>
+</div>
+</html>

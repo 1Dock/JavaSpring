@@ -1,0 +1,4 @@
+.row-danger td, .row-danger th {
+    color: red !important;
+    font-weight: 700 !important;
+}
