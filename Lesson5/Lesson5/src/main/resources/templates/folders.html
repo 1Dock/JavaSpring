@@ -4,7 +4,7 @@
     <div class="card mt-4" th:each="folder : ${folders}">
         <form th:action="@{'/delete-folder'}" method="post" class="card-header p-0 text-end">
             <input hidden name="folder_id" th:value="${folder.getId()}">
-            <button type="submit" class="btn btn-light btn-sm"><img src="/trash-icon.png"></button>
+            <button type="submit" class="btn btn-light btn-sm"><img src="/img/trash-icon.png"></button>
         </form>
         <div class="card-body">
             <h5 class="card-title" th:text="${folder.getName()}"></h5>
